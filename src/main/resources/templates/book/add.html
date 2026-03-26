@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm Sách Mới | Quản Lý HUTECH Store</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+
+<body class="bg-light">
+    <th:block th:replace="~{layout::header}"></th:block>
+
+    <div class="container py-5 animate-fade-in">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center mb-4">
+                    <a href="/books" class="btn btn-outline-secondary btn-sm me-3 rounded-circle"
+                        style="width: 35px; height: 35px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <h2 class="fw-bold mb-0">Thêm Sách Mới</h2>
+                </div>
+
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+                    <form th:action="@{/books/add}" th:object="${book}" method="post" enctype="multipart/form-data">
+                        <!-- Error Messages -->
+                        <div th:if="${errors}" class="alert alert-danger border-0 rounded-3 mb-4">
+                            <ul class="mb-0 small fw-semibold">
+                                <li th:each="err : ${errors}" th:text="${err}"></li>
+                            </ul>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-12">
+                                <label for="title"
+                                    class="form-label text-muted small text-uppercase fw-bold letter-spacing-sm">Tiêu Đề
+                                    Sách</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i
+                                            class="bi bi-type"></i></span>
+                                    <input type="text" class="form-control bg-light border-start-0 ps-0"
+                                        th:field="*{title}" id="title" placeholder="VD: Clean Code" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="author"
+                                    class="form-label text-muted small text-uppercase fw-bold letter-spacing-sm">Tên Tác
+                                    Giả</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i
+                                            class="bi bi-person"></i></span>
+                                    <input type="text" class="form-control bg-light border-start-0 ps-0"
+                                        th:field="*{author}" id="author" placeholder="Robert C. Martin" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="price"
+                                    class="form-label text-muted small text-uppercase fw-bold letter-spacing-sm">Giá Bán
+                                    (đ)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i
+                                            class="bi bi-currency-dollar"></i></span>
+                                    <input type="number" step="1000" class="form-control bg-light border-start-0 ps-0"
+                                        th:field="*{price}" id="price" placeholder="290000" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="category"
+                                    class="form-label text-muted small text-uppercase fw-bold letter-spacing-sm">Chọn
+                                    Danh Mục</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i
+                                            class="bi bi-tags"></i></span>
+                                    <select class="form-select bg-light border-start-0 ps-0" th:field="*{category.id}"
+                                        id="category" required>
+                                        <option value="" disabled selected>-- Chọn một danh mục --</option>
+                                        <option th:each="category : ${categories}" th:value="${category.id}"
+                                            th:text="${category.name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="warehouse"
+                                    class="form-label text-muted small text-uppercase fw-bold letter-spacing-sm">Chọn
+                                    Kho</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i
+                                            class="bi bi-house"></i></span>
+                                    <select class="form-select bg-light border-start-0 ps-0" th:field="*{warehouse.id}"
+                                        id="warehouse" required>
+                                        <option value="" disabled selected>-- Chọn một kho --</option>
+                                        <option th:each="warehouse : ${warehouses}" th:value="${warehouse.id}"
+                                            th:text="${warehouse.name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="imageFile"
+                                    class="form-label text-muted small text-uppercase fw-bold letter-spacing-sm">Hình
+                                    Ảnh Sách</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 text-muted"><i
+                                            class="bi bi-image"></i></span>
+                                    <input type="file" class="form-control bg-light border-start-0 ps-0" id="imageFile"
+                                        name="imageFile" accept="image/*" onchange="previewImage(event)">
+                                </div>
+                                <div id="imagePreview" class="mt-3" style="display: none;">
+                                    <img id="preview" src="" alt="Preview" class="img-fluid rounded-3 shadow-sm"
+                                        style="max-height: 200px; object-fit: cover;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3 border-top d-flex gap-3">
+                            <button type="submit" class="btn btn-primary px-5 py-3 shadow-sm rounded-pill">
+                                <i class="bi bi-cloud-arrow-up me-2"></i>Lưu Sách
+                            </button>
+                            <a href="/books" class="btn btn-outline-secondary px-5 py-3 rounded-pill">Hủy Bỏ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{layout::footer}"></th:block>
+
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('preview');
+            const previewContainer = document.getElementById('imagePreview');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                previewContainer.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+
+</html>

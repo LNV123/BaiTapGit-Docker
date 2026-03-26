@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký Tài Khoản | HUTECH Store</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+
+<body class="bg-light">
+    <th:block th:replace="~{layout::header}"></th:block>
+
+    <div class="container py-5">
+        <div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+            <div class="col-12 col-md-8 col-lg-5">
+                <div class="card border-0 shadow-lg animate-fade-in" style="border-radius: 1.5rem;">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <div class="bg-primary bg-opacity-10 d-inline-flex p-3 rounded-circle mb-3">
+                                <i class="bi bi-person-plus text-primary fs-3"></i>
+                            </div>
+                            <h3 class="fw-bold">Tạo Tài Khoản</h3>
+                            <p class="text-muted small">Tham gia cộng đồng HUTECH Bookstore ngay hôm nay</p>
+                        </div>
+
+                        <form th:action="@{/register}" th:object="${user}" method="post">
+                            <div th:if="${errors}" class="alert alert-danger border-0 rounded-3 small mb-4">
+                                <ul class="mb-0">
+                                    <li th:each="error : ${errors}" th:text="${error}"></li>
+                                </ul>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" th:field="*{username}" id="username"
+                                    placeholder="Tên đăng nhập" required>
+                                <label for="username">Tên đăng nhập</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" th:field="*{email}" id="email"
+                                    placeholder="Email" required>
+                                <label for="email">Địa chỉ Email</label>
+                            </div>
+
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" th:field="*{password}" id="password"
+                                    placeholder="Mật khẩu" required>
+                                <label for="password">Mật khẩu</label>
+                            </div>
+
+                            <div class="form-floating mb-4">
+                                <input type="tel" class="form-control" th:field="*{phone}" id="phone"
+                                    placeholder="Số điện thoại" required>
+                                <label for="phone">Số điện thoại</label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100 mb-4 justify-content-center py-3">
+                                <i class="bi bi-check-circle me-2"></i>Đăng Ký Ngay
+                            </button>
+
+                            <p class="text-center mb-0 text-muted small">
+                                Bạn đã có tài khoản? <a th:href="@{/login}"
+                                    class="text-primary fw-bold text-decoration-none">Đăng nhập</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{layout::footer}"></th:block>
+</body>
+
+</html>

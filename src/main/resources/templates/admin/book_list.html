@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Kho Tồn Sách | Admin</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+<body class="bg-light">
+    <th:block th:replace="~{layout::header}"></th:block>
+    <div class="container py-5 animate-fade-in">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2 class="fw-bold">Kho Tồn Sách</h2>
+            </div>
+            <div class="col-md-4 text-end">
+                <a class="btn btn-primary me-2" th:href="@{/admin/books/restore-all}" onclick="return confirm('Bạn có chắc muốn khôi phục lại TẤT CẢ các sách đã bị ngừng bán?');">
+                    <i class="bi bi-arrow-counterclockwise"></i> Khôi phục tất cả
+                </a>
+                <a class="btn btn-success" th:href="@{/admin/books/add}">
+                    <i class="bi bi-plus-circle"></i> Thêm sách mới
+                </a>
+            </div>
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên sách</th>
+                    <th>Tác giả</th>
+                    <th>Thể loại</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="book : ${books}" th:classappend="${book.isDeleted ? 'table-secondary text-muted' : ''}">
+                    <td th:text="${book.id}"></td>
+                    <td>
+                        <span th:text="${book.title}"></span>
+                        <span th:if="${book.isDeleted}" class="badge bg-danger ms-2">Đã xóa/Ngừng bán</span>
+                    </td>
+                    <td th:text="${book.author}"></td>
+                    <td th:text="${book.category.name}"></td>
+                    <td th:text="${book.price}"></td>
+                    <td th:text="${book.quantity}"></td>
+                    <td>
+                        <a th:href="@{'/admin/books/edit/' + ${book.id}}" class="btn btn-warning btn-sm">Sửa</a>
+                        <a th:if="${!book.isDeleted}" th:href="@{'/admin/books/delete/' + ${book.id}}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa sách này?');">Xóa</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <th:block th:replace="~{layout::footer}"></th:block>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Access Denied</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{layout::header}"></th:block>
+    <div class="container py-5 text-center">
+        <h1 class="display-1 text-danger">403</h1>
+        <h2>Access Denied</h2>
+        <p>You do not have permission to access this page.</p>
+        <a href="/" class="btn btn-primary">Back to Home</a>
+    </div>
+    <th:block th:replace="~{layout::footer}"></th:block>
+</body>
+
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${book.title} + ' | HUTECH Store'">Chi Tiết Sách</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+
+<body class="bg-light">
+    <th:block th:replace="~{layout::header}"></th:block>
+
+    <div class="container py-5 animate-fade-in">
+        <div class="row mb-4">
+            <div class="col">
+                <a href="/books" class="btn btn-outline-secondary btn-sm rounded-pill">
+                    <i class="bi bi-arrow-left me-2"></i>Quay lại danh sách
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Book Image -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden sticky-top" style="top: 100px;">
+                    <div th:if="${book.imageUrl}" class="position-relative">
+                        <img th:src="${book.imageUrl}" th:alt="${book.title}" class="w-100"
+                            style="height: 500px; object-fit: cover;">
+                        <div class="position-absolute top-0 end-0 m-3">
+                            <span class="badge bg-primary px-3 py-2 rounded-pill shadow">
+                                <i class="bi bi-star-fill me-1"></i>Nổi bật
+                            </span>
+                        </div>
+                    </div>
+                    <div th:unless="${book.imageUrl}" class="bg-light d-flex align-items-center justify-content-center"
+                        style="height: 500px;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-book display-1 mb-3"></i>
+                            <p class="mb-0">Chưa có hình ảnh</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Details -->
+            <div class="col-lg-8">
+                <div th:if="${errorMessage}" class="alert alert-danger border-0 rounded-4 mb-4 shadow-sm animate-shake">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <span th:text="${errorMessage}"></span>
+                </div>
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 mb-4">
+                    <div class="mb-4">
+                        <span class="badge bg-info bg-opacity-10 text-info border border-info-subtle px-3 py-2 mb-3">
+                            <i class="bi bi-tag-fill me-1"></i><span th:text="${book.category.name}">Danh mục</span>
+                        </span>
+                        <h1 class="display-5 fw-bold mb-3" th:text="${book.title}">Tên sách</h1>
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div class="d-flex align-items-center text-muted">
+                                <i class="bi bi-person-circle me-2 fs-5"></i>
+                                <span th:text="${book.author}">Tác giả</span>
+                            </div>
+                            <div class="vr"></div>
+                            <div class="d-flex align-items-center text-muted">
+                                <i class="bi bi-hash me-1"></i>
+                                <span>Mã: <strong th:text="${book.id}">1</strong></span>
+                            </div>
+                            <div class="vr"></div>
+                            <div class="d-flex align-items-center text-muted">
+                                <i class="bi bi-box-seam me-2 fs-5"></i>
+                                <span>Còn lại: <strong th:text="${book.quantity}" class="text-primary">0</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-top border-bottom py-4 mb-4">
+                        <div th:if="${book.isDeleted}" class="alert alert-warning mb-0 text-center">
+                            <h4 class="alert-heading mb-0"><i class="bi bi-exclamation-circle me-2"></i>Sách đã ngừng bán</h4>
+                            <p class="mb-0 mt-2">Quyển sách này hiện đã tạm ngừng kinh doanh hoặc đã bị xóa khỏi hệ thống.</p>
+                        </div>
+                        <div th:unless="${book.isDeleted}" class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="text-muted small mb-2">Giá bán</div>
+                                <div class="display-6 fw-bold text-primary font-monospace"
+                                    th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                    0 đ
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-3 mt-md-0">
+                                <form th:action="@{/books/add-to-cart}" method="post">
+                                    <input type="hidden" name="id" th:value="${book.id}">
+                                    <input type="hidden" name="name" th:value="${book.title}">
+                                    <input type="hidden" name="price" th:value="${book.price}">
+
+                                    <div class="d-flex gap-2 align-items-center mb-3">
+                                        <label class="text-muted small">Số lượng:</label>
+                                        <input type="number" name="quantity" value="1" min="1" max="99"
+                                            class="form-control form-control-sm" style="width: 80px;">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill shadow-sm">
+                                        <i class="bi bi-cart-plus me-2"></i>Thêm vào giỏ hàng
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Info -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="card bg-light border-0 p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-white rounded-circle p-2 me-3">
+                                        <i class="bi bi-truck text-success fs-5"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold small">Miễn phí vận chuyển</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">Cho đơn từ 200.000đ</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light border-0 p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-white rounded-circle p-2 me-3">
+                                        <i class="bi bi-shield-check text-primary fs-5"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold small">Đảm bảo chính hãng</div>
+                                        <div class="text-muted" style="font-size: 0.75rem;">100% sách chất lượng</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Description Section -->
+                <div class="card border-0 shadow-sm rounded-4 p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-info-circle me-2 text-primary"></i>Thông tin chi tiết
+                    </h5>
+                    <div class="text-muted">
+                        <p>Cuốn sách "<strong th:text="${book.title}">Tên sách</strong>" của tác giả
+                            <strong th:text="${book.author}">Tác giả</strong> là một trong những đầu sách
+                            được yêu thích trong danh mục <strong th:text="${book.category.name}">Danh mục</strong>.
+                        </p>
+                        <p class="mb-0">Đây là tài liệu tham khảo hữu ích cho sinh viên và những ai đam mê học hỏi.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{layout::footer}"></th:block>
+
+
+    <style>
+        .font-monospace {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+    </style>
+</body>
+
+</html>

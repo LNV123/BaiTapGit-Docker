@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản Lý Đơn Hàng | Admin</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+<body class="bg-light d-flex flex-column h-100">
+    <th:block th:replace="~{layout::header}"></th:block>
+    <main class="flex-shrink-0">
+    <div class="container py-5 animate-fade-in">
+        <div class="row mb-5 align-items-center">
+            <div class="col-md-6">
+                <h2 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-cart-check-fill text-primary me-2"></i> Quản Lý Đơn Hàng
+                </h2>
+                <p class="text-muted small mb-0 mt-1" th:text="'Quản lý (' + ${invoices.size()} + ') đơn hàng của hệ thống'"></p>
+            </div>
+            <div class="col-md-6">
+                <form th:action="@{/admin/invoices}" method="get" class="d-flex gap-2">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 rounded-start-pill ps-3">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="number" name="search" class="form-control border-start-0 py-2 rounded-end-pill me-2" 
+                               placeholder="Tìm mã đơn hàng (ví dụ: 123)..." th:value="${search}">
+                    </div>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">Tìm kiếm</button>
+                    <a th:if="${search != null}" th:href="@{/admin/invoices}" class="btn btn-outline-secondary rounded-pill px-3 shadow-sm d-flex align-items-center">
+                        <i class="bi bi-x-circle"></i>
+                    </a>
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(invoices)}" class="text-center py-5">
+            <div class="bg-white rounded-4 shadow-sm py-5 px-4 d-inline-block border border-light">
+                <i class="bi bi-inbox fs-1 d-block mb-3 text-secondary opacity-50"></i>
+                <h4 class="text-muted">Không tìm thấy đơn hàng nào</h4>
+                <p class="text-muted mb-0">Thử tìm kiếm với mã đơn hàng khác hoặc kiểm tra lại sau.</p>
+                <a th:href="@{/admin/invoices}" class="btn btn-primary mt-3 rounded-pill px-4">Tất cả đơn hàng</a>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${not #lists.isEmpty(invoices)}">
+            <div class="col" th:each="invoice : ${invoices}">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-hover-transition">
+                    <div class="card-header border-0 bg-white pt-4 px-4 pb-0 d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-primary fs-5" th:text="'#' + ${invoice.id}"></span>
+                        <span class="badge rounded-pill px-3 py-2" 
+                              th:classappend="${invoice.status == 'Đặt hàng thành công' ? 'bg-success-subtle text-success' : (invoice.status == 'Đơn hàng bị hủy' ? 'bg-danger-subtle text-danger' : 'bg-warning-subtle text-warning-emphasis')}"
+                              th:text="${invoice.status}"></span>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-3">
+                            <label class="text-muted small d-block mb-1">Khách hàng</label>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 rounded-circle text-primary d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                                <span class="fw-semibold text-dark" th:text="${invoice.user != null ? invoice.user.username : 'Khách vãng lai'}"></span>
+                            </div>
+                        </div>
+                        <div class="row row-cols-2 g-3 mb-3">
+                            <div class="col">
+                                <label class="text-muted small d-block mb-1">Ngày đặt</label>
+                                <span class="text-dark small" th:text="${#calendars.format(invoice.invoiceDate, 'dd/MM/yyyy')}"></span>
+                            </div>
+                            <div class="col">
+                                <label class="text-muted small d-block mb-1">Tổng tiền</label>
+                                <span class="text-primary fw-bold" th:text="${#numbers.formatDecimal(invoice.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer border-0 bg-light p-3 text-center">
+                        <a th:href="@{'/admin/invoices/' + ${invoice.id}}" class="btn btn-outline-primary btn-sm rounded-pill w-100 py-2 fw-medium">
+                            <i class="bi bi-eye me-1"></i> Xem chi tiết
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+    <th:block th:replace="~{layout::footer}"></th:block>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cập Nhật Tồn Kho | Admin</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+<body class="bg-light">
+    <th:block th:replace="~{layout::header}"></th:block>
+    <div class="container py-5 animate-fade-in">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+                    <h2 class="fw-bold mb-4">Cập Nhật Thông Tin Sách</h2>
+                    <form th:action="@{'/admin/books/edit/' + ${book.id}}" th:object="${book}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" th:field="*{id}">
+                        <div class="row g-4">
+                            <div class="col-md-12">
+                                <label for="title" class="form-label fw-bold">Tiêu Đề Sách</label>
+                                <input type="text" class="form-control" th:field="*{title}" id="title" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="author" class="form-label fw-bold">Tác Giả</label>
+                                <input type="text" class="form-control" th:field="*{author}" id="author" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="price" class="form-label fw-bold">Giá Bán</label>
+                                <input type="number" class="form-control" th:field="*{price}" id="price" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="quantity" class="form-label fw-bold">Số Lượng Tồn Kho</label>
+                                <input type="number" class="form-control" th:field="*{quantity}" id="quantity" required>
+                                <div class="text-danger" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="category" class="form-label fw-bold">Danh Mục</label>
+                                <select class="form-select" th:field="*{category.id}" id="category" required>
+                                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}" th:selected="${cat.id == book.category.id}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="warehouse" class="form-label fw-bold">Kho Lưu Trữ (Địa điểm)</label>
+                                <select class="form-select" th:field="*{warehouse.id}" id="warehouse">
+                                    <option value="">-- Không chọn / Chưa có kho --</option>
+                                    <option th:each="wh : ${warehouses}" th:value="${wh.id}" th:text="${wh.name}" th:selected="${book.warehouse != null and wh.id == book.warehouse.id}"></option>
+                                </select>
+                                <div class="form-text small">Bạn có thể tạo thêm địa điểm kho trong mục Quản lý kho.</div>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="imageFile" class="form-label fw-bold">Hình Ảnh (Để trống nếu không đổi)</label>
+                                <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*">
+                                <div th:if="${book.imageUrl}" class="mt-2">
+                                    <img th:src="${book.imageUrl}" alt="Current Image" style="max-height: 100px;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-warning px-4">Cập Nhật</button>
+                            <a th:href="@{/admin/books}" class="btn btn-outline-secondary px-4">Hủy</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <th:block th:replace="~{layout::footer}"></th:block>
+</body>
+</html>

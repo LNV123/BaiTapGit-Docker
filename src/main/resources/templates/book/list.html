@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSRF Meta Tags -->
+
+    <title>Khám Phá Sách | HUTECH Store</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+
+<body class="bg-light">
+    <th:block th:replace="~{layout::header}"></th:block>
+
+    <!-- Hidden element for JS to check role -->
+    <div id="isAdmin" sec:authorize="hasAuthority('ADMIN')" style="display: none;"></div>
+
+    <div class="container py-5 animate-fade-in">
+        <div class="row mb-5 align-items-end">
+            <div class="col-md-7">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="bg-primary bg-opacity-10 dark-mode-bg-opacity-20 rounded-3 p-2 me-3">
+                        <i class="bi bi-collection text-primary fs-4"></i>
+                    </div>
+                    <span class="text-primary fw-bold text-uppercase small letter-spacing-lg">Thư Viện Sách</span>
+                </div>
+                <h2 class="display-6 fw-bold mb-0">Khám Phá Cửa Hàng</h2>
+                <p class="text-muted mt-2 mb-0">Nơi hội tụ những kiến thức tinh túy nhất cho sinh viên HUTECH.</p>
+            </div>
+            <div class="col-md-5 text-md-end">
+                <div class="d-inline-flex gap-2 mt-4 mt-md-0">
+                    <div class="position-relative">
+                        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                        <input type="text" id="searchInput" class="form-control ps-5 border-0 shadow-sm py-2"
+                            placeholder="Tìm tên sách hoặc tác giả..." style="width: 280px; border-radius: 12px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm p-3 rounded-4 bg-white">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-journal-text text-primary"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Tổng số sách</div>
+                            <div class="fw-bold fs-5" id="total-books">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm p-3 rounded-4 bg-white">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-success bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-tags text-success"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Danh mục</div>
+                            <div class="fw-bold fs-5">IT & Design</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm p-3 rounded-4 bg-white">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-warning bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-star text-warning"></i>
+                        </div>
+                        <div>
+                            <div class="text-muted small">Đánh giá</div>
+                            <div class="fw-bold fs-5">4.8 / 5.0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book Grid -->
+        <div class="row g-4" id="book-grid">
+            <!-- Content loaded via Ajax -->
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary me-2" role="status"></div>
+                <span class="text-muted">Đang tải dữ liệu...</span>
+            </div>
+        </div>
+
+        <!-- Footer Info -->
+        <div class="mt-4 d-flex justify-content-between align-items-center px-2">
+            <p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i> Danh sách được cập nhật tự động từ
+                hệ thống.</p>
+            <nav aria-label="Page navigation" id="pagination-placeholder"></nav>
+        </div>
+    </div>
+
+    <th:block th:replace="~{layout::footer}"></th:block>
+
+    <script>
+        $(document).ready(function () {
+            loadBooks();
+
+            // Real-time search
+            $('#searchInput').on('input', function () {
+                const keyword = $(this).val();
+                if (keyword.length >= 2) {
+                    searchBooks(keyword);
+                } else if (keyword.length === 0) {
+                    loadBooks();
+                }
+            });
+        });
+
+        function loadBooks() {
+            $.ajax({
+                url: '/api/v1/books',
+                type: 'GET',
+                success: function (books) {
+                    renderTable(books);
+                    $('#total-books').text(books.length);
+                }
+            });
+        }
+
+        function searchBooks(keyword) {
+            $.ajax({
+                url: '/api/v1/books/search?keyword=' + keyword,
+                type: 'GET',
+                success: function (books) {
+                    renderTable(books);
+                }
+            });
+        }
+
+        function deleteBook(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa cuốn sách này không? Thao tác này không thể hoàn tác.')) {
+                $.ajax({
+                    url: '/api/v1/books/' + id,
+                    type: 'DELETE',
+                    success: function () {
+                        loadBooks();
+                    }
+                });
+            }
+        }
+
+        function renderTable(books) {
+            const grid = $('#book-grid');
+            grid.empty();
+
+            const isAdmin = $('#isAdmin').length > 0;
+
+
+            if (books.length === 0) {
+                grid.append(`
+                    <div class="col-12 text-center py-5">
+                        <div class="mb-3"><i class="bi bi-search display-6 text-muted"></i></div>
+                        <div class="text-muted">Rất tiếc, không tìm thấy kết quả nào phù hợp.</div>
+                        <button class="btn btn-link text-primary mt-2" onclick="$('#searchInput').val('').trigger('input');">Xóa tìm kiếm</button>
+                    </div>
+                `);
+                return;
+            }
+
+            books.forEach(book => {
+                const actionHtml = book.isDeleted ? `
+                    <div class="d-grid mt-auto">
+                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger-subtle px-3 py-2 w-100">
+                            <i class="bi bi-x-circle me-1"></i> Ngừng bán
+                        </span>
+                    </div>
+                ` : `
+                    <form action="/books/add-to-cart" method="post" class="d-grid mt-auto">
+                        <input type="hidden" name="id" value="${book.id}">
+                        <input type="hidden" name="name" value="${book.title}">
+                        <input type="hidden" name="price" value="${book.price}">
+                        <input type="hidden" name="imageUrl" value="${book.imageUrl}">
+                        <button type="submit" class="btn btn-success btn-sm px-4 rounded-pill shadow-sm">
+                            <i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ
+                        </button>
+                    </form>
+                `;
+
+                const imageHtml = book.imageUrl
+                    ? `<img src="${book.imageUrl}" alt="${book.title}" class="card-img-top book-card-img" style="height: 250px; object-fit: cover;">`
+                    : `<div class="card-img-top bg-light d-flex align-items-center justify-content-center text-primary book-card-img" style="height: 250px;">
+                            <i class="bi bi-book-fill display-4"></i>
+                        </div>`;
+
+                const cardStyle = book.isDeleted ? 'opacity: 0.6;' : '';
+                
+                const card = `
+                    <div class="col-sm-6 col-md-4 col-lg-3 animate-fade-in" style="${cardStyle}">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden book-card hover-lift">
+                            <div class="position-relative">
+                                ${imageHtml}
+                                <div class="position-absolute top-0 end-0 p-2">
+                                    <span class="badge rounded-pill bg-info bg-opacity-90 text-white shadow-sm" style="backdrop-filter: blur(4px);">
+                                        ${book.category}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-body d-flex flex-column p-4">
+                                <div class="text-muted small mb-2"><i class="bi bi-person me-1"></i> ${book.author}</div>
+                                <a href="/books/detail/${book.id}" class="text-decoration-none mb-2">
+                                    <h5 class="fw-bold text-dark hover-primary mb-0" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.4em; line-height: 1.2em;">${book.title}</h5>
+                                </a>
+                                <div class="mb-3 mt-auto pt-2">
+                                    <span class="fw-bold text-primary fs-5 font-monospace">${book.price.toLocaleString('vi-VN')} đ</span>
+                                </div>
+                                ${actionHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.append(card);
+            });
+        }
+    </script>
+    <style>
+        .border-dashed {
+            border-style: dashed !important;
+        }
+
+        .letter-spacing-lg {
+            letter-spacing: 2px;
+        }
+
+        .font-monospace {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+
+        .hover-primary:hover {
+            color: var(--bs-primary) !important;
+            text-decoration: underline !important;
+        }
+
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+        }
+    </style>
+</body>
+
+</html>

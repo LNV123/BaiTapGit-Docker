@@ -1,0 +1,33 @@
+name: bookstore-system
+
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: bookstore-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: bookstore
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+
+  app:
+    image: ngocvux/bookstore-app:latest
+    build: .
+    container_name: bookstore-app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/bookstore?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=password
+    ports:
+      - "8081:8081"
+    restart: on-failure
+
+volumes:
+  db-data:

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán Thành Công | HUTECH Store</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+
+<body class="bg-light d-flex flex-column h-100">
+    <th:block th:replace="~{layout::header}"></th:block>
+
+    <div class="container py-5 d-flex align-items-center justify-content-center flex-grow-1 animate-fade-in">
+        <div class="card border-0 shadow-lg p-5 text-center rounded-5" style="max-width: 600px;">
+            <div class="mb-4">
+                <div class="bg-success bg-opacity-10 d-inline-flex p-4 rounded-circle">
+                    <i class="bi bi-check-lg text-success display-1"></i>
+                </div>
+            </div>
+            <h1 class="fw-bold text-success mb-3">Thanh Toán Thành Công!</h1>
+            <p class="text-muted lead mb-4">Cảm ơn bạn đã tin tưởng và mua sắm tại HUTECH Bookstore. Đơn hàng của bạn đã
+                được tiếp nhận và đang được xử lý.</p>
+
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+                <a href="/books"
+                    class="btn btn-primary btn-lg px-4 rounded-pill shadow fw-bold d-flex align-items-center justify-content-center gap-2 transition-all">
+                    <i class="bi bi-cart-plus-fill"></i> Tiếp Tục Mua Sắm
+                </a>
+                <a href="/"
+                    class="btn btn-white btn-lg px-4 rounded-pill border shadow-sm fw-bold d-flex align-items-center justify-content-center gap-2 text-primary transition-all hover-scale">
+                    <i class="bi bi-house-door-fill"></i> Về Trang Chủ
+                </a>
+            </div>
+
+            <div class="mt-5 pt-4 border-top">
+                <p class="small text-muted mb-0">Mã đơn hàng: <span
+                        class="fw-bold text-dark font-monospace">#ORD-[[${T(java.util.UUID).randomUUID().toString().substring(0,8).toUpperCase()}]]</span>
+                </p>
+                <p class="small text-muted">Mọi thắc mắc xin vui lòng liên hệ hotline: <span class="fw-bold">1900
+                        xxxx</span></p>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{layout::footer}"></th:block>
+</body>
+
+</html>

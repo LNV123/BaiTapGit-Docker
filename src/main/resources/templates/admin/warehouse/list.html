@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý danh sách kho | Admin</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+<body class="bg-light">
+    <th:block th:replace="~{layout::header}"></th:block>
+    <div class="container py-5 animate-fade-in">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2 class="fw-bold">Quản lý danh sách kho</h2>
+            </div>
+            <div class="col-md-4 text-end">
+                <a class="btn btn-success" th:href="@{/admin/warehouses/add}">Thêm kho mới</a>
+            </div>
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên kho</th>
+                    <th>Địa chỉ</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="warehouse : ${warehouses}">
+                    <td th:text="${warehouse.id}"></td>
+                    <td th:text="${warehouse.name}"></td>
+                    <td th:text="${warehouse.address}"></td>
+                    <td>
+                        <a th:href="@{'/admin/warehouses/edit/' + ${warehouse.id}}" class="btn btn-warning btn-sm">Sửa</a>
+                        <a th:href="@{'/admin/warehouses/delete/' + ${warehouse.id}}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa kho này?');">Xóa</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <th:block th:replace="~{layout::footer}"></th:block>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUTECH Bookstore | Trang Chủ</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+
+<body>
+    <th:block th:replace="~{layout::header}"></th:block>
+
+    <div class="hero-section animate-fade-in">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle mb-3 px-3 py-2">CHÀO
+                        MỪNG ĐẾN VỚI HUTECH</span>
+                    <h1 class="hero-title">Cuộc Phiêu Lưu Kế Tiếp <br>Bắt Đầu Bằng Một Cuốn Sách.</h1>
+                    <p class="lead text-muted mb-5 pe-lg-5">
+                        Khám phá hàng ngàn đầu sách từ công nghệ, văn học đến phát triển bản thân. Quản lý hiện đại,
+                        trải nghiệm mượt mà và kết nối tức thì.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="/books" class="btn btn-primary btn-lg shadow-lg">
+                            <i class="bi bi-rocket-takeoff me-2"></i>Khám Phá Sách
+                        </a>
+                        <a href="/register" class="btn btn-outline-secondary btn-lg" sec:authorize="!isAuthenticated()">
+                            Tham Gia Cộng Đồng
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <div class="position-relative">
+                        <div class="bg-primary opacity-10 rounded-circle position-absolute blur-3xl"
+                            style="width: 400px; height: 400px; top: -50px; right: -50px;"></div>
+                        <img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            alt="Books" class="img-fluid rounded-4 shadow-2xl position-relative z-1 animate-float"
+                            style="max-height: 500px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-5 mt-n5 position-relative z-2">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card p-4 h-100 border-0 shadow-sm hover-up">
+                    <div class="bg-primary bg-opacity-10 rounded-3 d-inline-flex p-3 mb-3" style="width: fit-content;">
+                        <i class="bi bi-patch-check text-primary fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold">Nội Dung Chất Lượng</h5>
+                    <p class="text-muted small mb-0">Mọi đầu sách đều được kiểm duyệt kỹ lưỡng để đảm bảo giá trị tri
+                        thức chuẩn xác cho sinh viên.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 h-100 border-0 shadow-sm hover-up">
+                    <div class="bg-warning bg-opacity-10 rounded-3 d-inline-flex p-3 mb-3" style="width: fit-content;">
+                        <i class="bi bi-shield-check text-warning fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold">Mua Sắm An Toàn</h5>
+                    <p class="text-muted small mb-0">Bảo mật của bạn là ưu tiên hàng đầu. Mọi giao dịch đều được mã hóa
+                        và xác minh.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 h-100 border-0 shadow-sm hover-up">
+                    <div class="bg-success bg-opacity-10 rounded-3 d-inline-flex p-3 mb-3" style="width: fit-content;">
+                        <i class="bi bi-people text-success fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold">Đánh Giá Chuyên Gia</h5>
+                    <p class="text-muted small mb-0">Tham gia cộng đồng độc giả và nhận thông tin chuyên sâu trước khi
+                        chọn cuốn sách tiếp theo.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{layout::footer}"></th:block>
+
+    <style>
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .hover-up:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+        }
+
+        .shadow-2xl {
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+    </style>
+</body>
+
+</html>

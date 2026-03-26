@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh Sửa Hồ Sơ | HUTECH Store</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+
+<body class="bg-light">
+    <th:block th:replace="~{layout::header}"></th:block>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm p-4 animate-fade-in">
+                    <div class="d-flex align-items-center mb-4">
+                        <a th:href="@{/profile}" class="btn btn-light rounded-circle me-3">
+                            <i class="bi bi-arrow-left"></i>
+                        </a>
+                        <h4 class="fw-bold mb-0">Chỉnh Sửa Thông Tin</h4>
+                    </div>
+
+                    <form th:action="@{/profile/edit}" th:object="${user}" method="post">
+                        <!-- Hiển thị lỗi tổng quát -->
+                        <div th:if="${errors}" class="alert alert-danger border-0 rounded-3 small mb-4">
+                            <ul class="mb-0">
+                                <li th:each="err : ${errors}" th:text="${err}"></li>
+                            </ul>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Tên đăng nhập (Không
+                                    thể đổi)</label>
+                                <input type="text" class="form-control bg-light" th:field="*{username}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Địa chỉ Email</label>
+                                <input type="email" class="form-control" th:field="*{email}" required>
+                                <div class="text-danger small mt-1" th:if="${#fields.hasErrors('email')}"
+                                    th:errors="*{email}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Số điện thoại</label>
+                                <input type="text" class="form-control" th:field="*{phone}" minlength="10"
+                                    maxlength="10">
+                                <div class="text-danger small mt-1" th:if="${#fields.hasErrors('phone')}"
+                                    th:errors="*{phone}"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold small text-uppercase text-muted">Mật khẩu mới (Để trống
+                                    nếu không đổi)</label>
+                                <input type="password" class="form-control" name="password" placeholder="••••••••">
+                            </div>
+
+                            <div class="col-12 mt-5">
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary px-5 rounded-pill fw-bold">
+                                        Lưu Thay Đổi
+                                    </button>
+                                    <a th:href="@{/profile}" class="btn btn-outline-secondary px-4 rounded-pill">
+                                        Hủy Bỏ
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{layout::footer}"></th:block>
+</body>
+
+</html>

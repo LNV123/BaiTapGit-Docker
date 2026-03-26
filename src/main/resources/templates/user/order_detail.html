@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Đơn Hàng | HUTECH Store</title>
+    <th:block th:replace="~{layout::link-css}"></th:block>
+    <th:block th:replace="~{layout::custom-css}"></th:block>
+</head>
+
+<body class="bg-light">
+    <th:block th:replace="~{layout::header}"></th:block>
+
+    <div class="container py-5 animate-fade-in">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card border-0 shadow-sm p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex align-items-center">
+                            <a th:href="@{/orders}" class="btn btn-light rounded-circle me-3">
+                                <i class="bi bi-arrow-left"></i>
+                            </a>
+                            <div>
+                                <h4 class="fw-bold mb-0" th:text="'Chi Tiết Đơn Hàng #' + ${invoice.id}">Chi Tiết Đơn
+                                    Hàng</h4>
+                                <p class="text-muted small mb-0"
+                                    th:text="'Đặt ngày ' + ${#dates.format(invoice.invoiceDate, 'HH:mm dd/MM/yyyy')}">
+                                </p>
+                            </div>
+                        </div>
+                        <span class="badge rounded-pill px-4 py-2"
+                              th:classappend="${invoice.status == 'Đặt hàng thành công' ? 'bg-success bg-opacity-10 text-success border border-success-subtle' : (invoice.status == 'Đơn hàng bị hủy' ? 'bg-danger bg-opacity-10 text-danger border border-danger-subtle' : 'bg-warning bg-opacity-10 text-warning border border-warning-subtle')}"
+                              th:text="${invoice.status}">
+                        </span>
+                    </div>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6 text-md-end order-md-2">
+                            <div class="bg-light p-4 rounded-4 shadow-sm">
+                                <h6 class="text-muted small text-uppercase fw-bold mb-3">Tóm tắt thanh toán</h6>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Tạm tính:</span>
+                                    <span class="fw-bold"
+                                        th:text="${#numbers.formatDecimal(invoice.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Phí vận chuyển:</span>
+                                    <span class="text-success fw-bold">Miễn phí</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between">
+                                    <span class="fs-5">Tổng cộng:</span>
+                                    <span class="fs-4 fw-bold text-primary"
+                                        th:text="${#numbers.formatDecimal(invoice.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="border-0 px-4 py-3">Sản phẩm</th>
+                                    <th class="border-0 py-3 text-center">Đơn giá</th>
+                                    <th class="border-0 py-3 text-center">Số lượng</th>
+                                    <th class="border-0 px-4 py-3 text-end">Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${invoice.itemInvoices}">
+                                    <td class="px-4 py-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-light rounded p-2 me-3" style="width: 60px; height: 80px;">
+                                                <img th:if="${item.book.imageUrl}" th:src="${item.book.imageUrl}"
+                                                    class="img-fluid rounded"
+                                                    style="object-fit: cover; width: 100%; height: 100%;">
+                                                <i th:unless="${item.book.imageUrl}"
+                                                    class="bi bi-book text-muted fs-3"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0 fw-bold" th:text="${item.book.title}">Tên sách</h6>
+                                                <p class="text-muted small mb-0" th:text="${item.book.author}">Tác giả
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 text-center"
+                                        th:text="${#numbers.formatDecimal(item.price ?: item.book.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                    </td>
+                                    <td class="py-3 text-center" th:text="${item.quantity}">1</td>
+                                    <td class="px-4 py-3 text-end fw-bold text-primary"
+                                        th:text="${#numbers.formatDecimal((item.price ?: item.book.price) * item.quantity, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top text-center">
+                        <p class="text-muted small mb-0">Cảm ơn bạn đã mua hàng tại HUTECH Bookstore!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{layout::footer}"></th:block>
+</body>
+
+</html>
