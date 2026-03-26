@@ -1,0 +1,17 @@
+﻿git : To 
+https://github.com/LNV123/BaiTapGit-Docker.git
+At line:1 char:1
++ git push -f origin main 2>&1 | Out-File 
+push_error.txt -Encoding utf8 ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (To https 
+   ://gith...pGit-Docker.git:String) [], RemoteExcep  
+  tion
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ ! [remote rejected] main -> main (refusing to allow 
+an OAuth App to create or update workflow 
+`.github/workflows/deploy.yml` without `workflow` 
+scope)
+error: failed to push some refs to 
+'https://github.com/LNV123/BaiTapGit-Docker.git'
