@@ -33,7 +33,7 @@ jobs:
     - name: Triển khai lên DevOps Classroom
       run: |
         REPO="ngocvux/springboot-app"
-        CONTAINER_PORT=80
+        CONTAINER_PORT=8081
         RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST "${{ secrets.DEPLOY_URL }}?repo=$REPO&tag=latest&slot=4&container_port=$CONTAINER_PORT&strict_container_port=0")
         BODY=$(echo "$RESPONSE" | sed "$d")
         CODE=$(echo "$RESPONSE" | tail -n1)
